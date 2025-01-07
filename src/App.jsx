@@ -71,13 +71,15 @@ const handleDelete = (idDaCancellare) => {
       <div className="container">
         <h2 className="text-center text-secondary my-3 fs-1">New articles</h2>
         {activeArticles.length > 0 ? (
-          <div>
+          <div className="display">
+            <div className="card">
             {activeArticles.map((curItem) => (<div key={curItem.id}>
                 <h4>{curItem.title}</h4>
                 <img src={`${importApi}/${curItem.image}`} alt={curItem.title} />
-                <button onClick={() => handleDelete(curItem.id)} className='btn btn-outline-secondary'>Delete</button>
+                <button onClick={() => handleDelete(curItem.id)} className='btn btn-outline-secondary m-3'>Delete</button>
               </div>
               ))}
+              </div>
           </div>
           
         ) : (

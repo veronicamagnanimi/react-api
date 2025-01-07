@@ -18,9 +18,9 @@ function App() {
 
 //post axios
 const getPosts = () => {
-  axios.get(`${importApi}/bacheca`).then((resp) => {
+  axios.get(`${importApi}/posts`).then((resp) => {
     console.log(resp);
-    setActiveArticles(resp.data.bacheca)
+    setActiveArticles(resp.data)
   })
 }
 
@@ -33,21 +33,18 @@ useEffect(() => {
   const handleArticlesForm = (event) => {
     event.preventDefault()
 
-  axios.post(`${importApi}/bacheca`, formData).then((resp) => {
-    console.log(resp.data);
-
-   //aggiungo il nuovo articolo all'elenco
-   setActiveArticles((prevArticles) => [...prevArticles, resp.data]);
-
-   //resetto i campi
-   setFormData(initialForm);
- })
+    axios.post(`${importApi}/posts`, formData).then((resp) => {
+      const newArray = [
+          ...activeArticles,
+          resp.data
+      ];
+      setActiveArticles(newArray);
+      setFormData(initialForm)
+  })
  };
 
 
-
-
-// FUNZIONE INPUT
+//funzione input
 const handleInputChange = (event) => {
   const keyToChange = event.target.name;
   const newValue = event.target.value;
@@ -57,6 +54,16 @@ const handleInputChange = (event) => {
     [keyToChange]: newValue,
   }));
 }
+
+//funzione delete
+const handleDelete = (idDaCancellare) => {
+  axios.delete(`${importApi}/posts/${idDaCancellare}`).then((resp) => {
+    const newArray = activeArticles.filter(
+      (curPost) => curPost.id !== idDaCancellare
+    );
+    setActiveArticles(newArray);
+  });
+};
 
 
   return (
@@ -68,9 +75,11 @@ const handleInputChange = (event) => {
             {activeArticles.map((curItem) => (<div key={curItem.id}>
                 <h4>{curItem.title}</h4>
                 <img src={`${importApi}/${curItem.image}`} alt={curItem.title} />
+                <button onClick={() => handleDelete(curItem.id)} className='btn btn-outline-danger'>Delete</button>
               </div>
               ))}
           </div>
+          
         ) : (
           <p className="text-secondary">There are currently no articles</p>
         )}
@@ -101,3 +110,5 @@ const handleInputChange = (event) => {
 }
 
 export default App
+
+

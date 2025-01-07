@@ -18,9 +18,9 @@ function App() {
 
 //post axios
 const getPosts = () => {
-  axios.get(`${importApi}/posts`).then((resp) => {
+  axios.get(`${importApi}/bacheca`).then((resp) => {
     console.log(resp);
-    setActiveArticles(resp.data)
+    setActiveArticles(resp.data.posts)
   })
 }
 
@@ -57,7 +57,7 @@ const handleInputChange = (event) => {
 
 //funzione delete
 const handleDelete = (idDaCancellare) => {
-  axios.delete(`${importApi}/posts/${idDaCancellare}`).then((resp) => {
+  axios.delete(`${importApi}/bacheca/${idDaCancellare}`).then((resp) => {
     const newArray = activeArticles.filter(
       (curPost) => curPost.id !== idDaCancellare
     );
@@ -75,7 +75,7 @@ const handleDelete = (idDaCancellare) => {
             {activeArticles.map((curItem) => (<div key={curItem.id}>
                 <h4>{curItem.title}</h4>
                 <img src={`${importApi}/${curItem.image}`} alt={curItem.title} />
-                <button onClick={() => handleDelete(curItem.id)} className='btn btn-outline-danger'>Delete</button>
+                <button onClick={() => handleDelete(curItem.id)} className='btn btn-outline-secondary'>Delete</button>
               </div>
               ))}
           </div>

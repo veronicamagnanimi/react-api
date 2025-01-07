@@ -1,62 +1,50 @@
-import {useEffect, useState} from "react";
+import {useState, useEffect} from "react";
+import axios from "axios";
 
-const initalForm = {
+const initialForm = {
   title: "",
-  description: "",
-  author: "",
   image: "",
-  category: "", //select
-  published: false
-}
+ }
+
+
+ //importo API
+ const importApi = "http://localhost:3000";
 
 function App() {
 
   const [activeArticles, setActiveArticles] = useState([]);
-  const [formData, setFormData] = useState(initalForm);
-
-  const [publishedMessage, setPublishedMessage] = useState("");
-
-  //USE EFFECT
-  useEffect(() => {
-    if (formData.published) {
-      setPublishedMessage("Article visible")
-     } else {
-       setPublishedMessage("Article not visible")
-     }
-   
-  }, [formData.published])
+  const [formData, setFormData] = useState(initialForm);
 
 
-  //FUNZIONE EVENTO BOTTONE
+//post axios
+const getPosts = () => {
+  axios.get(`${importApi}/bacheca`).then((resp) => {
+    console.log(resp);
+    setActiveArticles(resp.data.bacheca)
+  })
+}
+
+//USE EFFECT
+useEffect(() => {
+  getPosts();
+}, []);
+
+  //funzione per aggiungere un nuovo articolo
   const handleArticlesForm = (event) => {
     event.preventDefault()
 
-  //creo l'oggetto del nuovo articolo
-  const newArticle = {
-    ...formData,
-    id: Date.now()
-  }
+  axios.post(`${importApi}/bacheca`, formData).then((resp) => {
+    console.log(resp.data);
 
-  //CONTROLLO SUL BOTTONE
-   if( !formData.author || !formData.author) {
-    alert("Fin in all fields");
-    return
-   }
+   //aggiungo il nuovo articolo all'elenco
+   setActiveArticles((prevArticles) => [...prevArticles, resp.data]);
 
-    const newArray = [...activeArticles, newArticle];
-    setActiveArticles(newArray);
-    
-  //resetta i campi
-    setFormData({...initalForm});
-
- 
+   //resetto i campi
+   setFormData(initialForm);
+ })
  };
 
- // FUNZIONE RIMUOVI ARTICOLO
-  const removeElem = (removeArticle) => {
-    const secondArray = activeArticles.filter((curItem) => curItem.id !== removeArticle.id)
-    setActiveArticles(secondArray)
-  } 
+
 
 
 // FUNZIONE INPUT
@@ -64,11 +52,10 @@ const handleInputChange = (event) => {
   const keyToChange = event.target.name;
   const newValue = event.target.value;
 
-  const newDataForm = {
-    ...formData, 
+  setFormData((prevData) => ({
+    ...prevData,
     [keyToChange]: newValue,
-  };
-  setFormData(newDataForm)
+  }));
 }
 
 
@@ -80,9 +67,7 @@ const handleInputChange = (event) => {
           <div>
             {activeArticles.map((curItem) => (<div key={curItem.id}>
                 <h4>{curItem.title}</h4>
-                <h5>{curItem.author}</h5>
-                <p>{curItem.description}</p> <span>{curItem.category}</span>
-                <button onClick={() => {removeElem(curItem)}}>🗑️</button>
+                <img src={`${importApi}/${curItem.image}`} alt={curItem.title} />
               </div>
               ))}
           </div>
@@ -98,46 +83,10 @@ const handleInputChange = (event) => {
           <div className="mb-3">
             <label htmlFor="title" className="text-secondary"><strong>Enter title</strong></label>
             <input className="form-control" id="title" type="text"
-            name="title" value={formData.name} onChange={handleInputChange} />
+            name="title" value={formData.title} onChange={handleInputChange} />
           </div>
 
-         {/*Author*/}
-          <div className="mb-3">
-            <label htmlFor="author" className="text-secondary"><strong>Enter author</strong></label>
-            <input type="text" id="author" className="form-control"
-            name="author" value={formData.author}
-              onChange={handleInputChange}/>
-          </div>
-         
-         {/*Description*/}
-          <div className="mb-3">
-            <label htmlFor="description" className="text-secondary"><strong>Enter description</strong></label>
-            <input type="text" id="description" className="form-control"
-            name="description" value={formData.description}
-              onChange={handleInputChange}/>
-          </div>
-          
-          {/*Category*/}
-          <div className="mb-3">
-          <select className="form-select text-secondary fw-bold" aria-label="Default select example" name="category"
-           value={formData.category} onChange={handleInputChange}>
-           <option selected>Category</option>
-          <option value="Category 1">One</option>
-          <option value="Category 2">Two</option>
-          <option value="Category 3">Three</option>
-         </select>
-          </div>
-         
-         {/*Published*/}
-          <div className="mb-3">
-              <label htmlFor="published" className="text-secondary fw-bold me-2">Published</label>
-              <input id="published" type="checkbox" name="published" checked={formData.published}
-              onChange={handleInputChange}
-              />
-              <div>{publishedMessage}</div>
-            </div>
-
-            {/*Image*/}
+         {/*Image*/}
             <div className="mb-3">
               <label htmlFor="image" className="text-secondary fw-bold me-2">Image</label>
               <input id="image" type="text" name="image" value={formData.image}

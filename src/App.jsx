@@ -57,7 +57,7 @@ const handleInputChange = (event) => {
 
 //funzione delete
 const handleDelete = (idDaCancellare) => {
-  axios.delete(`${importApi}/bacheca/${idDaCancellare}`).then((resp) => {
+  axios.delete(`${importApi}/posts/${idDaCancellare}`).then((resp) => {
     const newArray = activeArticles.filter(
       (curPost) => curPost.id !== idDaCancellare
     );

@@ -16,6 +16,7 @@ function App() {
 
   const [activeArticles, setActiveArticles] = useState([]);
   const [formData, setFormData] = useState(initialForm);
+  const [tag, setTag] = useState([]);
 
 
 //post axios
@@ -30,6 +31,21 @@ const getPosts = () => {
 useEffect(() => {
   getPosts();
 }, []);
+
+//USE EFFECT TAG
+useEffect(() => {
+  getTags();
+}, []);       //qui metterò filter nelle quadre
+
+
+
+  //funzione per selezionare i tag
+  const getTags = () => {
+    axios.get(`${apiUrl}/tags`).then((resp) => {
+      console.log(resp);
+      setTag(resp.data.tag);
+    })
+  }
 
   //funzione per aggiungere un nuovo articolo
   const handleArticlesForm = (event) => {
@@ -71,6 +87,12 @@ const handleDelete = (idDaCancellare) => {
   return (
     <>
       <div className="container">
+        <section>
+          <select name="tag" id="">
+            <option value="all">All tags</option>
+            {tag.map((curTag, index) => <option key={index} value={curTag}>{curTag}</option>)}
+          </select>
+        </section>
         <h2 className="text-center text-secondary my-3 fs-1">New articles</h2>
         {activeArticles.length > 0 ? (
           <div className="display">

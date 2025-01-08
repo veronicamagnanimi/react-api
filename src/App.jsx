@@ -9,20 +9,18 @@ const initialForm = {
  }
 
 
- //importo API
-//  const importApi = "http://localhost:3000";
-
 function App() {
 
   const [activeArticles, setActiveArticles] = useState([]);
   const [formData, setFormData] = useState(initialForm);
-  const [tag, setTag] = useState([]);
+  const [tags, setTags] = useState([]);
+  const [filter, setFilter] = useState("all");
 
 
 //post axios
 const getPosts = () => {
   axios.get(`${apiUrl}/bacheca`).then((resp) => {
-    console.log(resp);
+    console.log("Dati ricevuti", resp);
     setActiveArticles(resp.data.posts)
   })
 }
@@ -35,15 +33,15 @@ useEffect(() => {
 //USE EFFECT TAG
 useEffect(() => {
   getTags();
-}, []);       //qui metterò filter nelle quadre
+}, [filter]);  
 
 
 
   //funzione per selezionare i tag
   const getTags = () => {
     axios.get(`${apiUrl}/tags`).then((resp) => {
-      console.log(resp);
-      setTag(resp.data.tag);
+      console.log("Tags", resp);
+      setTags(resp.data.tags);
     })
   }
 
@@ -88,9 +86,9 @@ const handleDelete = (idDaCancellare) => {
     <>
       <div className="container">
         <section>
-          <select name="tag" id="">
+          <select name="tags" id="" value={filter} onChange={(event) => setFilter(event.target.value)}>
             <option value="all">All tags</option>
-            {tag.map((curTag, index) => <option key={index} value={curTag}>{curTag}</option>)}
+            {tags.map((curTag, index) => <option key={index} value={curTag}>{curTag}</option>)}
           </select>
         </section>
         <h2 className="text-center text-secondary my-3 fs-1">New articles</h2>

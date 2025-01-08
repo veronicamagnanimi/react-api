@@ -1,5 +1,7 @@
 import {useState, useEffect} from "react";
 import axios from "axios";
+import AppPost from "./component/AppPost";
+const apiUrl = import.meta.env.VITE_API_URL
 
 const initialForm = {
   title: "",
@@ -8,7 +10,7 @@ const initialForm = {
 
 
  //importo API
- const importApi = "http://localhost:3000";
+//  const importApi = "http://localhost:3000";
 
 function App() {
 
@@ -18,7 +20,7 @@ function App() {
 
 //post axios
 const getPosts = () => {
-  axios.get(`${importApi}/bacheca`).then((resp) => {
+  axios.get(`${apiUrl}/bacheca`).then((resp) => {
     console.log(resp);
     setActiveArticles(resp.data.posts)
   })
@@ -33,7 +35,7 @@ useEffect(() => {
   const handleArticlesForm = (event) => {
     event.preventDefault()
 
-    axios.post(`${importApi}/posts`, formData).then((resp) => {
+    axios.post(`${apiUrl}/posts`, formData).then((resp) => {
       const newArray = [
           ...activeArticles,
           resp.data
@@ -57,7 +59,7 @@ const handleInputChange = (event) => {
 
 //funzione delete
 const handleDelete = (idDaCancellare) => {
-  axios.delete(`${importApi}/posts/${idDaCancellare}`).then((resp) => {
+  axios.delete(`${apiUrl}/posts/${idDaCancellare}`).then((resp) => {
     const newArray = activeArticles.filter(
       (curPost) => curPost.id !== idDaCancellare
     );
@@ -74,9 +76,8 @@ const handleDelete = (idDaCancellare) => {
           <div className="display">
             <div className="card">
             {activeArticles.map((curItem) => (<div key={curItem.id}>
-                <h4>{curItem.title}</h4>
-                <img src={`${importApi}/${curItem.image}`} alt={curItem.title} />
-                <button onClick={() => handleDelete(curItem.id)} className='btn btn-outline-secondary m-3'>Delete</button>
+              <AppPost post = {curItem}/>
+              <button onClick={() => handleDelete(curItem.id)} className='btn btn-outline-secondary m-3'>Delete</button>
               </div>
               ))}
               </div>

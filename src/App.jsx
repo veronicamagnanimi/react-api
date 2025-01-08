@@ -40,7 +40,7 @@ useEffect(() => {
   //funzione per selezionare i tag
   const getTags = () => {
     axios.get(`${apiUrl}/tags`).then((resp) => {
-      console.log("Tags", resp);
+      console.log("Tag", resp);
       setTags(resp.data.tags);
     })
   }
@@ -86,7 +86,7 @@ const handleDelete = (idDaCancellare) => {
     <>
       <div className="container">
         <section>
-          <select name="tags" id="" value={filter} onChange={(event) => setFilter(event.target.value)}>
+          <select name="tag" id="" value={filter} onChange={(event) => setFilter(event.target.value)}>
             <option value="all">All tags</option>
             {tags.map((curTag, index) => <option key={index} value={curTag}>{curTag}</option>)}
           </select>
